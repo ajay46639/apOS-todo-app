@@ -29,7 +29,7 @@ def add_task(name):
 
 
 def update_task(task_number):
-    data[task_number]["task_done"] = True
+    data[f"{task_number}"]["task_done"] = True
     print(f"Task no.{task_number} updated to Done!")
     with open("data/data.json", "w")  as  f:
         json.dump(data, f)
@@ -38,19 +38,29 @@ def update_task(task_number):
     
 def get_all_task():
     with open("data/data.json", "r") as f:
-        data = json.load(f)
+        data = json.load(f)          
+    print("\n" +"TODO-LIST".center(50, '-')) 
+    topline = "Task No.  " + "Task Name " + " "*25 + "Done "
+    print(topline)
+    print("-"*50)
     for i in range(1, len(data)+1) :
         key = f"{i}"
-        print(f"{i} : {data[key].items()}")
-
-
+        name = data[key]["name"]
+        done = data[key]["task_done"]
+        line = key.center(10) + name.ljust(35) + str(done)
+        print(line)
+    print("-"*50 + "\n")
+    
 def get_specific_task(task_no):
     with open("data/data.json", "r") as f:
         data = json.load(f)
     key = f"{task_no}"
-    print(data[key])
-
-
+    name = data[key]["name"]
+    done  = data[key]["task_done"]
+    print("\n" + "="*30)
+    print(f" ⁕ Task No. : {task_no}" + f"\n ⁕ Task Name : {name}" + f"\n ⁕ Task Done : {done}")
+    print("="*30 + "\n")
+    
 
 while True :
     print(">>> Menu: \n1. Add Task \n2. Update Task \n3. List all Task \n4. List one Task ")
