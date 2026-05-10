@@ -1,8 +1,9 @@
 from datetime import datetime 
+from colorama import Fore, Style, Back,init
 import json 
 import os 
 import sys
-
+init()
 os.system("cls")
 
 if os.path.exists("data"):
@@ -38,7 +39,7 @@ def add_task(name):
     task_no = len(data) + 1 
     data[str(task_no)] = {"name" : name , "task_done" : False, "time" : time}
     save()
-    print(f"Task no.{task_no} Added to list! ")
+    print(Fore.GREEN + f"Task no.{task_no} Added to list! ")
 
 
 
@@ -47,15 +48,15 @@ def update_task(task_number):
     key = str(task_number)
     data[key]["task_done"] = True
     save()
-    print(f"Task no.{task_number} updated to Done!\n")
+    print(Fore.GREEN + f"Task no.{task_number} updated to Done!")
 
     
 def get_all_task():
     load()
-    print("\n" +"> TODO-LIST <".center(62, '=')) 
+    print(Fore.GREEN + "\n" +"> TODO-LIST <".center(62, '=')) 
     topline = "Task No.  " + "Task Name " + " "*19 + "Done " + "  Added On "
-    print(topline)
-    print("="*62)
+    print(Fore.YELLOW + topline)
+    print(Fore.GREEN + "="*62)
     for i in range(1, len(data)+1) :
         key = str(i)
         name = data[key]["name"]
@@ -68,13 +69,13 @@ def get_all_task():
         if done :
             donemark = "✓"
         else:
-            donemark = "⁕"
+            donemark = "×"
             
         line = key.center(10) + name.ljust(29) + donemark.center(6) + time.center(10)
-        print(line)
+        print(Fore.YELLOW + line)
         if i < len(data):
             print("-"*62 )
-    print("="*62)
+    print(Fore.GREEN + "="*62)
 
 def get_specific_task(task_no):
     load()
@@ -84,16 +85,16 @@ def get_specific_task(task_no):
     if done :
         donemark  = "✓"
     else  :
-        donemark = "⁕"
+        donemark = "×"
     
     try :
         time = data[key]["time"]
     except KeyError as e :
         time = "-"
 
-    print("\n" + "="*35)
+    print(Fore.GREEN + "\n" + "="*35)
     print(f" ⁕ Task No.  : {task_no}" + f"\n ⁕ Task Name : {name}" + f"\n ⁕ Task Done : {donemark}" + f"\n ⁕ Added On  : {time}")
-    print("="*35 + "\n")
+    print(Fore.GREEN + "="*35 + "\n")
 
     
 def resort():
@@ -109,7 +110,7 @@ def remove_task(task_no):
     load()
     removed_task = data.pop(str(task_no),None)
     save()
-    print(f"Task '{removed_task["name"]}' Removed!\n")
+    print(Fore.GREEN + f"Task '{removed_task["name"]}' Removed!\n")
     resort()
 
     
@@ -119,15 +120,15 @@ def edit_task(task_no, new_name, task_status = False):
     if task_status:
         data[str(task_no)]["task_done"] = not data[str(task_no)]["task_done"]
     save()
-    print("Task Edited Successfully >>> ")
+    print(Fore.GREEN + "Task Edited Successfully >>> ")
     get_specific_task(task_no)
     
 
 menu = "\n>>> Menu : \n1. Add Task \n2. Update Task Status \n3. List all Task \n4. List one Task \n5. Remove Task \n6. Edit Task\n"
-print(menu)
+print(Fore.CYAN + menu)
 
 while True :
-    cmd = input("\nEnter cmd no. from menu :  \n> 'Q/q' for quit\n> 'M/m' for menu \n---------> ")
+    cmd = input(Fore.CYAN  + "\nEnter cmd no. from menu :  \n> 'Q/q' for quit\n> 'M/m' for menu \n---------> ")
     
     try :
         cmd_no = int(cmd)
@@ -138,19 +139,19 @@ while True :
             print(menu)
             continue
         else:
-            print("Invalid Input!")
+            print(Fore.RED + "Invalid Input!")
             continue
     
     else:
         if cmd_no ==  1 :
-            task_name = input("Task Name : ")
+            task_name = input(Fore.YELLOW + "Task Name : ")
             add_task(task_name)
             
         elif cmd_no == 2 :
             try :
-                task_no = int(input("\nUpdate Task no. : "))
+                task_no = int(input(Fore.YELLOW + "Update Task no. : "))
             except ValueError as e :
-                print("Invalid Input ! ")
+                print(Fore.RED + "Invalid Input ! ")
                 continue
             update_task(task_no)
             
@@ -159,23 +160,23 @@ while True :
         
         elif cmd_no == 4 :
             try:
-                task_no = int(input("\nEnter Task no. : "))
+                task_no = int(input(Fore.YELLOW + "Enter Task no. : "))
             except ValueError as e :
-                print("Invalid Input !")
+                print(Fore.RED + "Invalid Input !")
                 continue
             
             try :
                 get_specific_task(task_no)
             except KeyError as e :
-                print("Invalid Input (Task not Exist!)")
+                print(Fore.RED + "Invalid Input (Task not Exist!)")
                 continue
                 
                 
         elif cmd_no == 5 :
             try :
-                task_no = int(input("\nEnter Task no. : "))
+                task_no = int(input(Fore.YELLOW + "Enter Task no. : "))
             except ValueError as e :
-                print("Invalid Input !")
+                print(Fore.RED + "Invalid Input !")
                 continue
                 
             try :
@@ -184,26 +185,26 @@ while True :
                 resort()
                 save()
             except KeyError as e :
-                print("Invalid Input (Task not Exist!)")
+                print(Fore.RED + "Invalid Input (Task not Exist!)")
                 continue    
                 
         
         elif cmd_no == 6 :
             try :
-                task_no = int(input("\nEnter Task no. : "))
+                task_no = int(input(Fore.YELLOW + "Enter Task no. : "))
             except ValueError as e :
-                print("Invalid Input !")
+                print(Fore.RED + "Invalid Input !")
                 continue
             
             try :
                 get_specific_task(task_no)
             except KeyError as e :
-                print("Invalid Input (Task not Exist!)")
+                print(Fore.RED + "Invalid Input (Task not Exist!)")
                 continue
             else:    
                 print("You want to edit above Task > ")
-                new_name = input("\nEnter new Task : ")
-                task_status = input("\nWant to edit task Status (y/n): ")
+                new_name = input(Fore.YELLOW + "Enter new Task : ")
+                task_status = input(Fore.YELLOW + "Want to edit task Status (y/n): ")
                 if task_status.lower() == "y" :
                     edit_task(task_no, new_name, True)
                 else :
@@ -211,10 +212,11 @@ while True :
                 
             
         else:
-            print("Invalid Input! (cmd not available))")
+            print(Fore.RED + "Invalid Input! (cmd not available))")
             continue
 
 
 save()
     
+
     
