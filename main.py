@@ -22,6 +22,7 @@ except (FileNotFoundError, json.JSONDecodeError):
 
 
 def load():
+    global data
     with open("data/data.json", "r") as f :
         data = json.load(f)
 def save():
@@ -30,15 +31,19 @@ def save():
         
 
 
-
 def add_task(name):
+    load()
+    t = datetime.now()
+    time = t.strftime("%d-%m-%Y %H:%M")
     task_no = len(data) + 1 
-    data[task_no] = {"name" : name , "task_done" : False}
+    data[str(task_no)] = {"name" : name , "task_done" : False, "time" : time}
     save()
-    print(Fore.GREEN + f"Task no.{task_no} Added to list! ")
+    print(f"Task no.{task_no} Added to list! ")
+
 
 
 def update_task(task_number):
+    load()
     key = str(task_number)
     data[key]["task_done"] = True
     save()
@@ -47,30 +52,52 @@ def update_task(task_number):
     
 def get_all_task():
     load()
-    print("\n" +"TODO-LIST".center(50, '-')) 
-    topline = "Task No.  " + "Task Name " + " "*25 + "Done "
+    print("\n" +"> TODO-LIST <".center(62, '=')) 
+    topline = "Task No.  " + "Task Name " + " "*19 + "Done " + "  Added On "
     print(topline)
-    print("-"*50)
+    print("="*62)
     for i in range(1, len(data)+1) :
         key = str(i)
         name = data[key]["name"]
         done = data[key]["task_done"]
-        line = key.center(10) + name.ljust(35) + str(done)
+        try :
+            time = data[key]["time"]
+        except KeyError as e :
+            time = "-"
+        
+        if done :
+            donemark = "✓"
+        else:
+            donemark = "⁕"
+            
+        line = key.center(10) + name.ljust(29) + donemark.center(6) + time.center(10)
         print(line)
-    print("-"*50 )
-    
-    
+        if i < len(data):
+            print("-"*62 )
+    print("="*62)
+
 def get_specific_task(task_no):
     load()
     key = str(task_no)
     name = data[key]["name"]
     done  = data[key]["task_done"]
-    print("\n" + "="*30)
-    print(f" ⁕ Task No.  : {task_no}" + f"\n ⁕ Task Name : {name}" + f"\n ⁕ Task Done : {done}")
-    print("="*30 + "\n")
+    if done :
+        donemark  = "✓"
+    else  :
+        donemark = "⁕"
+    
+    try :
+        time = data[key]["time"]
+    except KeyError as e :
+        time = "-"
+
+    print("\n" + "="*35)
+    print(f" ⁕ Task No.  : {task_no}" + f"\n ⁕ Task Name : {name}" + f"\n ⁕ Task Done : {donemark}" + f"\n ⁕ Added On  : {time}")
+    print("="*35 + "\n")
 
     
 def resort():
+    load()
     values = list(data.values())
     data.clear()
     for i,task in enumerate(values, 1) :
@@ -80,10 +107,11 @@ def resort():
     
 def remove_task(task_no):
     load()
-    removed_task = data.pop(str(task_no))
-    print(f"Task '{removed_task["name"]}' Removed !\n")
-    resort()
+    removed_task = data.pop(str(task_no),None)
     save()
+    print(f"Task '{removed_task["name"]}' Removed!\n")
+    resort()
+
     
 def edit_task(task_no, new_name, task_status = False):
     load()
@@ -117,9 +145,10 @@ while True :
         if cmd_no ==  1 :
             task_name = input("Task Name : ")
             add_task(task_name)
+            
         elif cmd_no == 2 :
             try :
-                task_no = int(input("Update Task no. : "))
+                task_no = int(input("\nUpdate Task no. : "))
             except ValueError as e :
                 print("Invalid Input ! ")
                 continue
@@ -130,7 +159,7 @@ while True :
         
         elif cmd_no == 4 :
             try:
-                task_no = int(input("Enter Task no. : "))
+                task_no = int(input("\nEnter Task no. : "))
             except ValueError as e :
                 print("Invalid Input !")
                 continue
@@ -141,16 +170,19 @@ while True :
                 print("Invalid Input (Task not Exist!)")
                 continue
                 
-        
+                
         elif cmd_no == 5 :
             try :
-                task_no = int(input("Enter Task no. : "))
+                task_no = int(input("\nEnter Task no. : "))
             except ValueError as e :
                 print("Invalid Input !")
                 continue
                 
             try :
+                load()
                 remove_task(task_no)
+                resort()
+                save()
             except KeyError as e :
                 print("Invalid Input (Task not Exist!)")
                 continue    
@@ -158,7 +190,7 @@ while True :
         
         elif cmd_no == 6 :
             try :
-                task_no = int(input("Enter Task no. : "))
+                task_no = int(input("\nEnter Task no. : "))
             except ValueError as e :
                 print("Invalid Input !")
                 continue
@@ -184,8 +216,5 @@ while True :
 
 
 save()
-    
-     
-    
     
     
