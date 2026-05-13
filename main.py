@@ -124,7 +124,41 @@ def edit_task(task_no, new_name, task_status = False):
     get_specific_task(task_no)
     
 
-menu = "\n>>> Menu : \n1. Add Task \n2. Update Task Status \n3. List all Task \n4. List one Task \n5. Remove Task \n6. Edit Task\n"
+def filter(donestatus):
+    load()
+    if donestatus:
+        print(Fore.GREEN + "\n" +"> Task-Done <".center(62, '='))
+    else:
+        print(Fore.GREEN + "\n" +"> Task-Not-Done <".center(62, '='))
+        
+    topline = "Task No.  " + "Task Name " + " "*19 + "Done " + "  Added On "
+    print(Fore.YELLOW + topline)
+    print(Fore.GREEN + "="*62)
+    for i in range(1, len(data)+1) :
+        key = str(i)
+        if data[key]["task_done"] == donestatus :
+            name = data[key]["name"]
+            done = data[key]["task_done"]
+            try :
+                time = data[key]["time"]
+            except KeyError as e :
+                time = "-"
+            
+            if done :
+                donemark = "✓"
+            else:
+                donemark = "×"
+                
+            line = key.center(10) + name.ljust(29) + donemark.center(6) + time.center(10)
+            print(Fore.YELLOW + line)
+            print("-"*62 )
+                
+    print(Fore.GREEN + "="*62)
+    
+
+
+
+menu = "\n>>> Menu : \n1. Add-Task \n2. Update-Task-Status \n3. Get-All-Task \n4. Get-One-Task \n5. Remove-Task \n6. Edit-Task \n7. Get-Done-Task \n8. Remaining-Task\n"
 print(Fore.CYAN + menu)
 
 while True :
@@ -209,14 +243,20 @@ while True :
                     edit_task(task_no, new_name, True)
                 else :
                     edit_task(task_no, new_name)
-                
+                    
+        elif cmd_no == 7 :
+            filter(True)
+
+        elif cmd_no == 8 :
+            filter(False)
+            
             
         else:
             print(Fore.RED + "Invalid Input! (cmd not available))")
             continue
 
 
-save()
+
     
 
     
